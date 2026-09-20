@@ -135,9 +135,9 @@ export default function LatmiyyahPage() {
         {content}
       </div>
 
-      <RelatedLatmiyyahs current={item} />
-
       <SuggestEditForm latmiyyah={item} />
+
+      <RelatedLatmiyyahs current={item} />
     </div>
   );
 }
