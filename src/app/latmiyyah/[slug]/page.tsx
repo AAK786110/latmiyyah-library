@@ -1,191 +1,136 @@
-"use client";
+import type { Metadata } from "next";
+import { cache } from "react";
+import { notFound } from "next/navigation";
 
-import { useEffect, useState } from "react";
-import { useParams, notFound } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
 import type { Latmiyyah } from "@/lib/types";
-import { extractYouTubeId } from "@/lib/youtube";
-import LyricsView from "@/components/LyricsView";
-import TranslationView from "@/components/TranslationView";
-import FullscreenReader from "@/components/FullscreenReader";
-import FavouriteButton from "@/components/FavouriteButton";
-import RelatedLatmiyyahs from "@/components/RelatedLatmiyyahs";
-import SuggestEditForm from "@/components/SuggestEditForm";
+import LatmiyyahPageClient from "./LatmiyyahPageClient";
 
-export default function LatmiyyahPage() {
-  const { slug } = useParams<{ slug: string }>();
-  const supabase = createClient();
+const SITE_URL = "https://latmiyyahvault.com";
 
-  const [item, setItem] = useState<Latmiyyah | null | undefined>(undefined);
+/*
+  Fetch once and reuse the result for both:
+  - SEO metadata
+  - the actual page
 
-  // Translation is ON by default
-  const [showTranslation, setShowTranslation] = useState(true);
+  This means generateMetadata() and the page do not need
+  separate database queries during the same request.
+*/
+const getLatmiyyah = cache(async (slug: string) => {
+  const supabase = createServerSupabaseClient();
 
-  // Used to briefly show "Copied" when the link is copied
-  const [shareStatus, setShareStatus] = useState<"idle" | "copied">("idle");
+  const { data } = await supabase
+    .from("latmiyyahs")
+    .select("*, tags:latmiyyah_tags(tag:tags(*))")
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
 
-  useEffect(() => {
-    async function load() {
-      const { data } = await supabase
-        .from("latmiyyahs")
-        .select("*, tags:latmiyyah_tags(tag:tags(*))")
-        .eq("slug", slug)
-        .eq("status", "published")
-        .maybeSingle();
-
-      if (!data) {
-        setItem(null);
-        return;
-      }
-
-      setItem({
-        ...data,
-        tags: (data.tags || [])
-          .map((t: any) => t.tag)
-          .filter(Boolean),
-      });
-    }
-
-    load();
-  }, [slug, supabase]);
-
-  async function handleShare() {
-    if (!item) return;
-
-    const url = window.location.href;
-
-    // On supported phones/browsers, open the normal share menu
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${item.title} | Latmiyyah Vault`,
-          url,
-        });
-
-        return;
-      } catch (error) {
-        // If the user simply closes the share menu, do nothing
-        if (error instanceof DOMException && error.name === "AbortError") {
-          return;
-        }
-      }
-    }
-
-    // Otherwise, copy the URL
-    try {
-      await navigator.clipboard.writeText(url);
-      setShareStatus("copied");
-
-      setTimeout(() => {
-        setShareStatus("idle");
-      }, 1500);
-    } catch {
-      setShareStatus("idle");
-    }
+  if (!data) {
+    return null;
   }
 
-  if (item === undefined) {
-    return <p className="text-muted">Loading...</p>;
-  }
+  return {
+    ...data,
+    tags: (data.tags || [])
+      .map((t: any) => t.tag)
+      .filter(Boolean),
+  } as Latmiyyah;
+});
 
-  if (item === null) {
-    return notFound();
-  }
+function createDescription(item: Latmiyyah) {
+  const arabicTitle = item.arabic_title
+    ? ` (${item.arabic_title})`
+    : "";
 
-  const videoId = extractYouTubeId(item.youtube_url);
+  const reciter = item.reciter
+    ? `, recited by ${item.reciter}`
+    : "";
 
-  const content = showTranslation ? (
-    <TranslationView
-      arabicText={item.arabic_text}
-      englishText={item.english_translation}
-    />
-  ) : (
-    <LyricsView arabicText={item.arabic_text} />
-  );
+  const arabicSeo = item.arabic_title
+    ? ` اقرأ كلمات ${item.arabic_title} بالعربية مع الترجمة الإنجليزية.`
+    : " اقرأ كلمات اللطمية بالعربية مع الترجمة الإنجليزية.";
 
   return (
-    <div className="mx-auto max-w-2xl">
-      {/* Title / metadata */}
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">{item.title}</h1>
-
-          {item.arabic_title && (
-            <p className="arabic-text mt-1 text-lg !text-fg">
-              {item.arabic_title}
-            </p>
-          )}
-
-          <p className="mt-2 text-sm text-muted">
-            {item.reciter}
-            {item.poet ? ` · ${item.poet}` : ""}
-          </p>
-
-          {item.tags && item.tags.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {item.tags.map((tag) => (
-                <span
-                  key={tag.id}
-                  className="rounded-full border border-border px-2 py-0.5 text-xs text-muted"
-                >
-                  {tag.name}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Share + Favourite */}
-        <div className="flex shrink-0 items-center gap-2">
-          <button
-            onClick={handleShare}
-            className="rounded-full border border-border px-3 py-1.5 text-sm hover:border-accent"
-          >
-            {shareStatus === "copied" ? "Copied" : "Share"}
-          </button>
-
-          <FavouriteButton id={item.id} />
-        </div>
-      </div>
-
-      {/* Embedded YouTube player */}
-      {videoId && (
-        <div className="mt-4 overflow-hidden rounded-lg border border-border bg-black">
-          <iframe
-            src={`https://www.youtube-nocookie.com/embed/${videoId}`}
-            title={`${item.title} YouTube video`}
-            className="aspect-video w-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          />
-        </div>
-      )}
-
-      {/* Translation / fullscreen controls */}
-      <div className="mt-6 flex items-center justify-between border-b border-border pb-3">
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={showTranslation}
-            onChange={(e) => setShowTranslation(e.target.checked)}
-          />
-          Show English translation
-        </label>
-
-        <FullscreenReader>
-          {content}
-        </FullscreenReader>
-      </div>
-
-      {/* Lyrics / translation */}
-      <div className="mt-6">
-        {content}
-      </div>
-
-      <SuggestEditForm latmiyyah={item} />
-
-      <RelatedLatmiyyahs current={item} />
-    </div>
+    `Read the Arabic lyrics and English translation of ` +
+    `${item.title}${arabicTitle}${reciter} on Latmiyyah Vault.` +
+    arabicSeo
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const item = await getLatmiyyah(params.slug);
+
+  if (!item) {
+    return {
+      title: "Latmiyyah Not Found",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const arabicTitle = item.arabic_title
+    ? ` (${item.arabic_title})`
+    : "";
+
+  const seoTitle =
+    `${item.title}${arabicTitle} Lyrics & English Translation`;
+
+  const description = createDescription(item);
+
+  const canonicalUrl =
+    `${SITE_URL}/latmiyyah/${item.slug}`;
+
+  return {
+    title: seoTitle,
+
+    description,
+
+    alternates: {
+      canonical: canonicalUrl,
+    },
+
+    openGraph: {
+      type: "article",
+      url: canonicalUrl,
+      siteName: "Latmiyyah Vault",
+      title: `${seoTitle} | Latmiyyah Vault`,
+      description,
+    },
+
+    twitter: {
+      card: "summary",
+      title: `${seoTitle} | Latmiyyah Vault`,
+      description,
+    },
+
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+      },
+    },
+  };
+}
+
+export default async function LatmiyyahPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const item = await getLatmiyyah(params.slug);
+
+  if (!item) {
+    notFound();
+  }
+
+  return <LatmiyyahPageClient item={item} />;
 }
