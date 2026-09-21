@@ -73,7 +73,7 @@ export default function LatmiyyahPage() {
           <h1 className="text-2xl font-semibold">{item.title}</h1>
 
           {item.arabic_title && (
-            <p className="arabic-text mt-1 text-lg">
+            <p className="arabic-text mt-1 text-lg !text-fg">
               {item.arabic_title}
             </p>
           )}

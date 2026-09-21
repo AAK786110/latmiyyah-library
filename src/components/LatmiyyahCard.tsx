@@ -22,7 +22,7 @@ export default function LatmiyyahCard({ item }: { item: Latmiyyah }) {
         <div className="min-w-0">
           <h3 className="line-clamp-2 font-medium group-hover:text-accent">{item.title}</h3>
           {item.arabic_title && (
-            <p className="arabic-text line-clamp-1 text-sm text-muted" style={{ lineHeight: 1.6 }}>
+            <p className="arabic-text !text-fg">
               {item.arabic_title}
             </p>
           )}
