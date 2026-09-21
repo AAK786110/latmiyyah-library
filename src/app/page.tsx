@@ -5,25 +5,31 @@ import type { Latmiyyah } from "@/lib/types";
 
 export default async function HomePage() {
   const supabase = createServerSupabaseClient();
-  const { data } = await supabase
+
+  const { data, count } = await supabase
     .from("latmiyyahs")
-    .select("*, tags:latmiyyah_tags(tag:tags(*))")
+    .select("*, tags:latmiyyah_tags(tag:tags(*))", {
+      count: "exact",
+    })
     .eq("status", "published")
     .order("created_at", { ascending: false })
-    .limit(6);
+    .limit(50);
 
   const recent: Latmiyyah[] = (data || []).map((r: any) => ({
     ...r,
     tags: (r.tags || []).map((t: any) => t.tag).filter(Boolean),
   }));
 
+  const latmiyyahCount = count ?? recent.length;
+
   return (
     <div>
       <div className="mx-auto max-w-2xl">
         <div className="text-center">
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-            A library of latmiyyahs & qasidas
+            A Vault of Latmiyyahs & Qasidas
           </h1>
+
           <p className="mt-3 text-muted">
             Original Arabic lyrics, English translations, and easy ways to find
             exactly what you're looking for.
@@ -33,6 +39,7 @@ export default async function HomePage() {
         <form action="/search" className="mt-8">
           <div className="flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-3 shadow-sm">
             <span aria-hidden>🔎</span>
+
             <input
               name="q"
               type="text"
@@ -57,6 +64,7 @@ export default async function HomePage() {
             >
               Advanced Filters
             </Link>
+
             <Link
               href="/random"
               className="rounded-lg border border-border px-4 py-3 text-center text-sm hover:border-accent"
@@ -72,6 +80,7 @@ export default async function HomePage() {
             >
               Favourites
             </Link>
+
             <Link
               href="/submit"
               className="rounded-lg border border-border px-4 py-3 text-center text-sm hover:border-accent"
@@ -80,16 +89,31 @@ export default async function HomePage() {
             </Link>
           </div>
         </div>
+
+        {/* Library count */}
+        <div className="mt-8 text-center">
+          <p className="text-sm font-medium text-accent">
+            {latmiyyahCount}{" "}
+            {latmiyyahCount === 1 ? "latmiyyah" : "Latmiyyahs"} in the Vault
+          </p>
+        </div>
       </div>
 
       {recent.length > 0 && (
-        <div className="mt-14">
+        <div className="mt-10">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Recently Added</h2>
-            <Link href="/search" className="text-sm text-accent hover:underline">
+            <h2 className="text-lg font-semibold">
+              Recently Added
+            </h2>
+
+            <Link
+              href="/search"
+              className="text-sm text-accent hover:underline"
+            >
               View all
             </Link>
           </div>
+
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {recent.map((item) => (
               <LatmiyyahCard key={item.id} item={item} />

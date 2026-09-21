@@ -46,7 +46,7 @@ export default function Header() {
     className="hidden h-7 w-7 object-contain dark:block"
   />
 
-  <span>Latmiyyah Library</span>
+  <span>Latmiyyah Vault</span>
 </Link>
 
         <nav className="hidden items-center gap-5 text-sm md:flex">

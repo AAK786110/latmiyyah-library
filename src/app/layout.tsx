@@ -3,8 +3,8 @@ import "./globals.css";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "Latmiyyah Library",
-  description: "A searchable library of Shia latmiyyahs and qasidas with Arabic lyrics and English translations.",
+  title: "Latmiyyah Vault",
+  description: "A searchable collection of Shia Latmiyyahs and Qasidas with Arabic lyrics and English translations.",
   icons: {
   icon: [
     {

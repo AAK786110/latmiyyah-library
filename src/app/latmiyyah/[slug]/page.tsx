@@ -58,7 +58,7 @@ export default function LatmiyyahPage() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${item.title} | Latmiyyah Library`,
+          title: `${item.title} | Latmiyyah Vault`,
           url,
         });
 
