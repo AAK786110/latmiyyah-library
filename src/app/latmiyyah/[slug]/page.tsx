@@ -21,6 +21,9 @@ export default function LatmiyyahPage() {
   // Translation is ON by default
   const [showTranslation, setShowTranslation] = useState(true);
 
+  // Used to briefly show "Copied" when the link is copied
+  const [shareStatus, setShareStatus] = useState<"idle" | "copied">("idle");
+
   useEffect(() => {
     async function load() {
       const { data } = await supabase
@@ -45,6 +48,41 @@ export default function LatmiyyahPage() {
 
     load();
   }, [slug, supabase]);
+
+  async function handleShare() {
+    if (!item) return;
+
+    const url = window.location.href;
+
+    // On supported phones/browsers, open the normal share menu
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${item.title} | Latmiyyah Library`,
+          url,
+        });
+
+        return;
+      } catch (error) {
+        // If the user simply closes the share menu, do nothing
+        if (error instanceof DOMException && error.name === "AbortError") {
+          return;
+        }
+      }
+    }
+
+    // Otherwise, copy the URL
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareStatus("copied");
+
+      setTimeout(() => {
+        setShareStatus("idle");
+      }, 1500);
+    } catch {
+      setShareStatus("idle");
+    }
+  }
 
   if (item === undefined) {
     return <p className="text-muted">Loading...</p>;
@@ -97,7 +135,17 @@ export default function LatmiyyahPage() {
           )}
         </div>
 
-        <FavouriteButton id={item.id} />
+        {/* Share + Favourite */}
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            onClick={handleShare}
+            className="rounded-full border border-border px-3 py-1.5 text-sm hover:border-accent"
+          >
+            {shareStatus === "copied" ? "Copied" : "Share"}
+          </button>
+
+          <FavouriteButton id={item.id} />
+        </div>
       </div>
 
       {/* Embedded YouTube player */}
