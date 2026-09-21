@@ -8,14 +8,6 @@ import LatmiyyahPageClient from "./LatmiyyahPageClient";
 
 const SITE_URL = "https://latmiyyahvault.com";
 
-/*
-  Fetch once and reuse the result for both:
-  - SEO metadata
-  - the actual page
-
-  This means generateMetadata() and the page do not need
-  separate database queries during the same request.
-*/
 const getLatmiyyah = cache(async (slug: string) => {
   const supabase = createServerSupabaseClient();
 
@@ -58,6 +50,124 @@ function createDescription(item: Latmiyyah) {
   );
 }
 
+function createStructuredData(
+  item: Latmiyyah,
+  canonicalUrl: string,
+  description: string
+) {
+  const workId = `${canonicalUrl}#work`;
+  const breadcrumbId = `${canonicalUrl}#breadcrumb`;
+  const websiteId = `${SITE_URL}/#website`;
+
+  return {
+    "@context": "https://schema.org",
+
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": canonicalUrl,
+
+        url: canonicalUrl,
+
+        name: item.arabic_title
+          ? `${item.title} (${item.arabic_title}) Lyrics & English Translation`
+          : `${item.title} Lyrics & English Translation`,
+
+        description,
+
+        inLanguage: ["en", "ar"],
+
+        isPartOf: {
+          "@type": "WebSite",
+          "@id": websiteId,
+          name: "Latmiyyah Vault",
+          url: SITE_URL,
+        },
+
+        breadcrumb: {
+          "@id": breadcrumbId,
+        },
+
+        mainEntity: {
+          "@id": workId,
+        },
+      },
+
+      {
+        "@type": "CreativeWork",
+        "@id": workId,
+
+        name: item.title,
+
+        ...(item.arabic_title
+          ? {
+              alternateName: item.arabic_title,
+            }
+          : {}),
+
+        url: canonicalUrl,
+
+        description,
+
+        inLanguage: ["ar", "en"],
+
+        ...(item.poet
+          ? {
+              creator: {
+                "@type": "Person",
+                name: item.poet,
+              },
+            }
+          : {}),
+
+        ...(item.reciter
+          ? {
+              contributor: {
+                "@type": "Person",
+                name: item.reciter,
+              },
+            }
+          : {}),
+
+        isPartOf: {
+          "@type": "WebSite",
+          "@id": websiteId,
+          name: "Latmiyyah Vault",
+          url: SITE_URL,
+        },
+      },
+
+      {
+        "@type": "BreadcrumbList",
+        "@id": breadcrumbId,
+
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Latmiyyah Vault",
+            item: SITE_URL,
+          },
+
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Explore Latmiyyahs",
+            item: `${SITE_URL}/explore`,
+          },
+
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: item.title,
+            item: canonicalUrl,
+          },
+        ],
+      },
+    ],
+  };
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -68,6 +178,7 @@ export async function generateMetadata({
   if (!item) {
     return {
       title: "Latmiyyah Not Found",
+
       robots: {
         index: false,
         follow: false,
@@ -113,6 +224,7 @@ export async function generateMetadata({
     robots: {
       index: true,
       follow: true,
+
       googleBot: {
         index: true,
         follow: true,
@@ -132,5 +244,30 @@ export default async function LatmiyyahPage({
     notFound();
   }
 
-  return <LatmiyyahPageClient item={item} />;
+  const canonicalUrl =
+    `${SITE_URL}/latmiyyah/${item.slug}`;
+
+  const description = createDescription(item);
+
+  const structuredData = createStructuredData(
+    item,
+    canonicalUrl,
+    description
+  );
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData).replace(
+            /</g,
+            "\\u003c"
+          ),
+        }}
+      />
+
+      <LatmiyyahPageClient item={item} />
+    </>
+  );
 }

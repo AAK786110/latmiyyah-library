@@ -3,6 +3,8 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import LatmiyyahCard from "@/components/LatmiyyahCard";
 import type { Latmiyyah } from "@/lib/types";
 
+const SITE_URL = "https://latmiyyahvault.com";
+
 export default async function HomePage() {
   const supabase = createServerSupabaseClient();
 
@@ -22,105 +24,127 @@ export default async function HomePage() {
 
   const latmiyyahCount = count ?? recent.length;
 
+  const websiteStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    url: SITE_URL,
+    name: "Latmiyyah Vault",
+    description:
+      "A searchable archive of Shia latmiyyahs and qasidas with original Arabic lyrics, English translations, reciters, poets, and videos.",
+    inLanguage: ["en", "ar"],
+  };
+
   return (
-    <div>
-      <div className="mx-auto max-w-2xl">
-        <div className="text-center">
-          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-            A Vault of Latmiyyahs & Qasidas
-          </h1>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(websiteStructuredData).replace(
+            /</g,
+            "\\u003c"
+          ),
+        }}
+      />
 
-          <p className="mt-3 text-muted">
-            Original Arabic lyrics, English translations, and easy ways to find
-            exactly what you're looking for.
-          </p>
-        </div>
+      <div>
+        <div className="mx-auto max-w-2xl">
+          <div className="text-center">
+            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              A vault of latmiyyahs & qasidas
+            </h1>
 
-        <form action="/search" className="mt-8">
-          <div className="flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-3 shadow-sm">
-            <span aria-hidden>🔎</span>
-
-            <input
-              name="q"
-              type="text"
-              placeholder="Search by title, reciter, poet, or tag..."
-              className="w-full bg-transparent outline-none placeholder:text-muted"
-            />
-          </div>
-        </form>
-
-        <div className="mt-6 grid gap-3">
-          <Link
-            href="/explore"
-            className="rounded-lg border border-accent bg-accent/10 px-5 py-4 text-center text-lg font-medium text-accent transition-colors hover:bg-accent/20"
-          >
-            Explore Latmiyyahs
-          </Link>
-
-          <div className="grid grid-cols-2 gap-3">
-            <Link
-              href="/search"
-              className="rounded-lg border border-border px-4 py-3 text-center text-sm hover:border-accent"
-            >
-              Advanced Filters
-            </Link>
-
-            <Link
-              href="/random"
-              className="rounded-lg border border-border px-4 py-3 text-center text-sm hover:border-accent"
-            >
-              Random Latmiyyah
-            </Link>
+            <p className="mt-3 text-muted">
+              Original Arabic lyrics, English translations, and easy ways to find
+              exactly what you're looking for.
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <form action="/search" className="mt-8">
+            <div className="flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-3 shadow-sm">
+              <span aria-hidden>🔎</span>
+
+              <input
+                name="q"
+                type="text"
+                placeholder="Search by title, reciter, poet, or tag..."
+                className="w-full bg-transparent outline-none placeholder:text-muted"
+              />
+            </div>
+          </form>
+
+          <div className="mt-6 grid gap-3">
             <Link
-              href="/favourites"
-              className="rounded-lg border border-border px-4 py-3 text-center text-sm hover:border-accent"
+              href="/explore"
+              className="rounded-lg border border-accent bg-accent/10 px-5 py-4 text-center text-lg font-medium text-accent transition-colors hover:bg-accent/20"
             >
-              Favourites
+              Explore Latmiyyahs
             </Link>
 
-            <Link
-              href="/submit"
-              className="rounded-lg border border-border px-4 py-3 text-center text-sm hover:border-accent"
-            >
-              Add Your Own Submission
-            </Link>
+            <div className="grid grid-cols-2 gap-3">
+              <Link
+                href="/search"
+                className="rounded-lg border border-border px-4 py-3 text-center text-sm hover:border-accent"
+              >
+                Advanced Filters
+              </Link>
+
+              <Link
+                href="/random"
+                className="rounded-lg border border-border px-4 py-3 text-center text-sm hover:border-accent"
+              >
+                Random Latmiyyah
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Link
+                href="/favourites"
+                className="rounded-lg border border-border px-4 py-3 text-center text-sm hover:border-accent"
+              >
+                Favourites
+              </Link>
+
+              <Link
+                href="/submit"
+                className="rounded-lg border border-border px-4 py-3 text-center text-sm hover:border-accent"
+              >
+                Add Your Own Submission
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-sm font-medium text-accent">
+              {latmiyyahCount}{" "}
+              {latmiyyahCount === 1 ? "latmiyyah" : "latmiyyahs"} in the vault
+            </p>
           </div>
         </div>
 
-        {/* Library count */}
-        <div className="mt-8 text-center">
-          <p className="text-sm font-medium text-accent">
-            {latmiyyahCount}{" "}
-            {latmiyyahCount === 1 ? "latmiyyah" : "Latmiyyahs"} in the Vault
-          </p>
-        </div>
+        {recent.length > 0 && (
+          <div className="mt-10">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold">
+                Recently Added
+              </h2>
+
+              <Link
+                href="/search"
+                className="text-sm text-accent hover:underline"
+              >
+                View all
+              </Link>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {recent.map((item) => (
+                <LatmiyyahCard key={item.id} item={item} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-
-      {recent.length > 0 && (
-        <div className="mt-10">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">
-              Recently Added
-            </h2>
-
-            <Link
-              href="/search"
-              className="text-sm text-accent hover:underline"
-            >
-              View all
-            </Link>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {recent.map((item) => (
-              <LatmiyyahCard key={item.id} item={item} />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
+    </>
   );
 }
