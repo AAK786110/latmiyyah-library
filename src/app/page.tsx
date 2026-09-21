@@ -51,7 +51,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-2xl">
           <div className="text-center">
             <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              A vault of latmiyyahs & qasidas
+              A Vault of Latmiyyahs & Qasidas
             </h1>
 
             <p className="mt-3 text-muted">
@@ -117,7 +117,7 @@ export default async function HomePage() {
           <div className="mt-8 text-center">
             <p className="text-sm font-medium text-accent">
               {latmiyyahCount}{" "}
-              {latmiyyahCount === 1 ? "latmiyyah" : "latmiyyahs"} in the vault
+              {latmiyyahCount === 1 ? "latmiyyah" : "Latmiyyahs"} in the Vault
             </p>
           </div>
         </div>
