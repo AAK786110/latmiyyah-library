@@ -10,6 +10,7 @@ import FullscreenReader from "@/components/FullscreenReader";
 import FavouriteButton from "@/components/FavouriteButton";
 import RelatedLatmiyyahs from "@/components/RelatedLatmiyyahs";
 import SuggestEditForm from "@/components/SuggestEditForm";
+import LiteYouTubeEmbed from "@/components/LiteYouTubeEmbed";
 
 export default function LatmiyyahPageClient({
   item,
@@ -142,17 +143,13 @@ export default function LatmiyyahPageClient({
 
       {/* Embedded YouTube player */}
       {videoId && (
-        <div className="mt-4 overflow-hidden rounded-lg border border-border bg-black">
-          <iframe
-            src={`https://www.youtube-nocookie.com/embed/${videoId}`}
-            title={`${item.title} YouTube video`}
-            className="aspect-video w-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          />
+        <div className="mt-4">
+            <LiteYouTubeEmbed
+            videoId={videoId}
+            title={item.title}
+            />
         </div>
-      )}
+        )}
 
       {/* Translation / fullscreen controls */}
       <div className="mt-6 flex items-center justify-between border-b border-border pb-3">
