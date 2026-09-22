@@ -16,6 +16,7 @@ export default function LatmiyyahPageClient({
   item: Latmiyyah;
 }) {
   const [showTranslation, setShowTranslation] = useState(true);
+
   const [shareStatus, setShareStatus] =
     useState<"idle" | "copied">("idle");
 
@@ -66,6 +67,7 @@ export default function LatmiyyahPageClient({
 
   return (
     <div className="mx-auto max-w-2xl">
+      {/* Title / metadata */}
       <div className="flex items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">
@@ -87,8 +89,27 @@ export default function LatmiyyahPageClient({
             {item.poet ? ` · ${item.poet}` : ""}
           </p>
 
+          {/* Visible SEO description */}
+          <p className="mt-2 text-sm text-muted">
+            Arabic lyrics and English translation of{" "}
+            <span className="font-medium text-fg">
+              {item.title}
+            </span>
+            {item.arabic_title && (
+              <>
+                {" "}
+                (
+                <span lang="ar" dir="rtl">
+                  {item.arabic_title}
+                </span>
+                )
+              </>
+            )}
+            .
+          </p>
+
           {item.tags && item.tags.length > 0 && (
-            <div className="mt-2 flex flex-wrap gap-1.5">
+            <div className="mt-3 flex flex-wrap gap-1.5">
               {item.tags.map((tag) => (
                 <span
                   key={tag.id}
@@ -101,6 +122,7 @@ export default function LatmiyyahPageClient({
           )}
         </div>
 
+        {/* Share + Favourite */}
         <div className="flex shrink-0 items-center gap-2">
           <button
             onClick={handleShare}
@@ -115,6 +137,7 @@ export default function LatmiyyahPageClient({
         </div>
       </div>
 
+      {/* Embedded YouTube player */}
       {videoId && (
         <div className="mt-4 overflow-hidden rounded-lg border border-border bg-black">
           <iframe
@@ -128,6 +151,7 @@ export default function LatmiyyahPageClient({
         </div>
       )}
 
+      {/* Translation / fullscreen controls */}
       <div className="mt-6 flex items-center justify-between border-b border-border pb-3">
         <label className="flex items-center gap-2 text-sm">
           <input
@@ -146,6 +170,7 @@ export default function LatmiyyahPageClient({
         </FullscreenReader>
       </div>
 
+      {/* Lyrics / translation */}
       <div className="mt-6">
         {content}
       </div>
