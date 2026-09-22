@@ -7,27 +7,74 @@ const SITE_URL = "https://latmiyyahvault.com";
 
 export const dynamic = "force-dynamic";
 
-export default async function HomePage() {
-  const supabase = createServerSupabaseClient();
-
-  const { data, error, count } = await supabase
-  .from("latmiyyahs")
-  .select("...", { count: "exact" })
-  .eq("status", "published")
-  .order("created_at", { ascending: false })
-  .limit(50);
-
-if (error) {
-  console.error("Homepage latmiyyah fetch failed:", error);
-  throw error;
+function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-  const recent: Latmiyyah[] = (data || []).map((r: any) => ({
-    ...r,
-    tags: (r.tags || []).map((t: any) => t.tag).filter(Boolean),
-  }));
+async function fetchHomepageLatmiyyahs() {
+  const supabase = createServerSupabaseClient();
 
-  const latmiyyahCount = count ?? recent.length;
+  const runQuery = async () =>
+    supabase
+      .from("latmiyyahs")
+      .select(
+        "*, tags:latmiyyah_tags(tag:tags(*))",
+        { count: "exact" }
+      )
+      .eq("status", "published")
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+  // First attempt
+  let result = await runQuery();
+
+  // One retry for temporary Supabase/network failures
+  if (result.error) {
+    console.warn(
+      "Homepage latmiyyah fetch failed. Retrying...",
+      result.error
+    );
+
+    await wait(500);
+
+    result = await runQuery();
+  }
+
+  if (result.error) {
+    console.error(
+      "Homepage latmiyyah fetch failed after retry:",
+      result.error
+    );
+
+    return {
+      recent: [] as Latmiyyah[],
+      count: null as number | null,
+      failed: true,
+    };
+  }
+
+  const recent: Latmiyyah[] = (result.data || []).map(
+    (r: any) => ({
+      ...r,
+      tags: (r.tags || [])
+        .map((t: any) => t.tag)
+        .filter(Boolean),
+    })
+  );
+
+  return {
+    recent,
+    count: result.count ?? recent.length,
+    failed: false,
+  };
+}
+
+export default async function HomePage() {
+  const {
+    recent,
+    count: latmiyyahCount,
+    failed,
+  } = await fetchHomepageLatmiyyahs();
 
   const websiteStructuredData = {
     "@context": "https://schema.org",
@@ -45,10 +92,9 @@ if (error) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(websiteStructuredData).replace(
-            /</g,
-            "\\u003c"
-          ),
+          __html: JSON.stringify(
+            websiteStructuredData
+          ).replace(/</g, "\\u003c"),
         }}
       />
 
@@ -60,8 +106,9 @@ if (error) {
             </h1>
 
             <p className="mt-3 text-muted">
-              Original Arabic lyrics, English translations, and easy ways to find
-              exactly what you're looking for.
+              Original Arabic lyrics, English translations,
+              and easy ways to find exactly what you're
+              looking for.
             </p>
           </div>
 
@@ -119,12 +166,27 @@ if (error) {
             </div>
           </div>
 
-          <div className="mt-8 text-center">
-            <p className="text-sm font-medium text-accent">
-              {latmiyyahCount}{" "}
-              {latmiyyahCount === 1 ? "latmiyyah" : "Latmiyyahs"} in the Vault
-            </p>
-          </div>
+          {!failed && latmiyyahCount !== null && (
+            <div className="mt-8 text-center">
+              <p className="text-sm font-medium text-accent">
+                {latmiyyahCount}{" "}
+                {latmiyyahCount === 1
+                  ? "latmiyyah"
+                  : "Latmiyyahs"}{" "}
+                in the Vault
+              </p>
+            </div>
+          )}
+
+          {failed && (
+            <div className="mt-8 text-center">
+              <p className="text-sm text-muted">
+                The latest additions are temporarily
+                unavailable. Search and explore are still
+                available.
+              </p>
+            </div>
+          )}
         </div>
 
         {recent.length > 0 && (
@@ -144,7 +206,10 @@ if (error) {
 
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {recent.map((item) => (
-                <LatmiyyahCard key={item.id} item={item} />
+                <LatmiyyahCard
+                  key={item.id}
+                  item={item}
+                />
               ))}
             </div>
           </div>
