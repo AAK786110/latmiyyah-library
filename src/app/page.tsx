@@ -5,17 +5,22 @@ import type { Latmiyyah } from "@/lib/types";
 
 const SITE_URL = "https://latmiyyahvault.com";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const supabase = createServerSupabaseClient();
 
-  const { data, count } = await supabase
-    .from("latmiyyahs")
-    .select("*, tags:latmiyyah_tags(tag:tags(*))", {
-      count: "exact",
-    })
-    .eq("status", "published")
-    .order("created_at", { ascending: false })
-    .limit(50);
+  const { data, error, count } = await supabase
+  .from("latmiyyahs")
+  .select("...", { count: "exact" })
+  .eq("status", "published")
+  .order("created_at", { ascending: false })
+  .limit(50);
+
+if (error) {
+  console.error("Homepage latmiyyah fetch failed:", error);
+  throw error;
+}
 
   const recent: Latmiyyah[] = (data || []).map((r: any) => ({
     ...r,
