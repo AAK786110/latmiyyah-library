@@ -195,7 +195,7 @@ export default async function HomePage() {
     url: SITE_URL,
     name: "Latmiyyah Vault",
     description:
-      "A searchable archive of Shia latmiyyahs and qasidas with original Arabic lyrics, English translations, reciters, poets, and videos.",
+      "A searchable archive of Shia latmiyyahs and nasheeds with original Arabic lyrics, English translations, reciters, poets, and videos.",
     inLanguage: ["en", "ar"],
   };
 
@@ -226,7 +226,7 @@ export default async function HomePage() {
               A Vault of
               <br />
               <span className="text-accent">
-                Latmiyyahs & Qasidas
+                Latmiyyahs & Nasheeds
               </span>
             </h1>
 
