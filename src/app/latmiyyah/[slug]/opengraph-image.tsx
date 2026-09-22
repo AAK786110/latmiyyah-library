@@ -27,9 +27,7 @@ function removeArabic(text: string | null | undefined) {
 export default async function Image({
   params,
 }: {
-  params:
-    | { slug: string }
-    | Promise<{ slug: string }>;
+  params: { slug: string } | Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
 
@@ -42,11 +40,8 @@ export default async function Image({
     .eq("status", "published")
     .maybeSingle();
 
-  const title =
-    removeArabic(item?.title) || "Latmiyyah Vault";
-
-  const reciter =
-    removeArabic(item?.reciter) || "";
+  const title = removeArabic(item?.title) || "Latmiyyah Vault";
+  const reciter = removeArabic(item?.reciter) || "";
 
   const videoId = extractYouTubeId(item?.youtube_url);
 
@@ -66,13 +61,15 @@ export default async function Image({
           fontFamily: "sans-serif",
         }}
       >
+        {/* Left text side */}
         <div
           style={{
-            width: thumbnail ? "62%" : "100%",
-            padding: "70px",
+            width: thumbnail ? "50%" : "100%",
+            padding: "60px 58px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
+            background: "#f8f3eb",
           }}
         >
           {/* Branding */}
@@ -80,39 +77,38 @@ export default async function Image({
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "18px",
+              gap: "16px",
               fontSize: "30px",
               fontWeight: 700,
             }}
           >
             <img
               src="https://latmiyyahvault.com/icon-light.png"
-              width="52"
-              height="52"
+              width="48"
+              height="48"
             />
-
             <span>Latmiyyah Vault</span>
           </div>
 
-          {/* Main content */}
+          {/* Main text */}
           <div
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "22px",
+              gap: "18px",
             }}
           >
             <div
               style={{
                 fontSize:
-                  title.length > 60
-                    ? "44px"
-                    : title.length > 40
-                    ? "50px"
-                    : "58px",
+                  title.length > 65
+                    ? "42px"
+                    : title.length > 45
+                    ? "48px"
+                    : "54px",
                 fontWeight: 700,
                 lineHeight: 1.08,
-                letterSpacing: "-1px",
+                letterSpacing: "-0.8px",
               }}
             >
               {title}
@@ -121,7 +117,7 @@ export default async function Image({
             {reciter && (
               <div
                 style={{
-                  fontSize: "25px",
+                  fontSize: "28px",
                   color: "#755d4d",
                   lineHeight: 1.3,
                 }}
@@ -131,11 +127,11 @@ export default async function Image({
             )}
           </div>
 
-          {/* Description */}
+          {/* Bottom descriptor */}
           <div
             style={{
               display: "flex",
-              fontSize: "24px",
+              fontSize: "22px",
               color: "#8d2a2e",
               fontWeight: 600,
             }}
@@ -144,34 +140,28 @@ export default async function Image({
           </div>
         </div>
 
-        {/* YouTube thumbnail */}
+        {/* Right image side */}
         {thumbnail && (
           <div
             style={{
-              width: "38%",
+              width: "50%",
               height: "100%",
               display: "flex",
-              position: "relative",
-              overflow: "hidden",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "#2a1811",
+              padding: "28px",
             }}
           >
             <img
               src={thumbnail}
-              width="456"
-              height="630"
+              width="500"
+              height="574"
               style={{
                 width: "100%",
                 height: "100%",
-                objectFit: "cover",
-              }}
-            />
-
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "linear-gradient(to right, rgba(248,243,235,0.35), rgba(0,0,0,0.05))",
+                objectFit: "contain",
+                objectPosition: "center",
               }}
             />
           </div>
