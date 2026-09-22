@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import type { Latmiyyah } from "@/lib/types";
 import { extractYouTubeId } from "@/lib/youtube";
@@ -108,15 +109,17 @@ export default function LatmiyyahPageClient({
             .
           </p>
 
+          {/* Clickable tags */}
           {item.tags && item.tags.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5">
               {item.tags.map((tag) => (
-                <span
+                <Link
                   key={tag.id}
-                  className="rounded-full border border-border px-2 py-0.5 text-xs text-muted"
+                  href={`/explore/${tag.category}/${tag.slug}`}
+                  className="rounded-full border border-border px-2 py-0.5 text-xs text-muted transition-colors hover:border-accent hover:text-accent"
                 >
                   {tag.name}
-                </span>
+                </Link>
               ))}
             </div>
           )}
