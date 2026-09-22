@@ -54,6 +54,7 @@ export default function Header() {
           <Link href="/explore" className="hover:text-accent">Explore</Link>
           <Link href="/favourites" className="hover:text-accent">Favourites</Link>
           <Link href="/submit" className="hover:text-accent">Add Submission</Link>
+          <Link href="/about" className="hover:text-accent">About</Link>
           <Link href="/feedback" className="hover:text-accent">Feedback</Link>
 
           {loggedIn ? (
@@ -92,6 +93,7 @@ function MobileMenu({ loggedIn, onLogout }: { loggedIn: boolean; onLogout: () =>
           <MenuLink href="/explore" onClick={() => setOpen(false)}>Explore</MenuLink>
           <MenuLink href="/favourites" onClick={() => setOpen(false)}>Favourites</MenuLink>
           <MenuLink href="/submit" onClick={() => setOpen(false)}>Add Submission</MenuLink>
+          <MenuLink href="/about" onClick={() => setOpen(false)}>About</MenuLink>
           <MenuLink href="/feedback" onClick={() => setOpen(false)}>Feedback</MenuLink>
 
           {loggedIn ? (
