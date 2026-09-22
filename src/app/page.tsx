@@ -17,18 +17,15 @@ async function fetchHomepageLatmiyyahs() {
   const runQuery = async () =>
     supabase
       .from("latmiyyahs")
-      .select(
-        "*, tags:latmiyyah_tags(tag:tags(*))",
-        { count: "exact" }
-      )
+      .select("*, tags:latmiyyah_tags(tag:tags(*))", {
+        count: "exact",
+      })
       .eq("status", "published")
       .order("created_at", { ascending: false })
       .limit(50);
 
-  // First attempt
   let result = await runQuery();
 
-  // One retry for temporary Supabase/network failures
   if (result.error) {
     console.warn(
       "Homepage latmiyyah fetch failed. Retrying...",
@@ -36,7 +33,6 @@ async function fetchHomepageLatmiyyahs() {
     );
 
     await wait(500);
-
     result = await runQuery();
   }
 
@@ -69,6 +65,122 @@ async function fetchHomepageLatmiyyahs() {
   };
 }
 
+function SearchIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+    </svg>
+  );
+}
+
+function SlidersIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      className="h-6 w-6"
+      aria-hidden="true"
+    >
+      <path d="M4 6h10M18 6h2M4 12h3M11 12h9M4 18h8M16 18h4" />
+      <circle cx="16" cy="6" r="2" />
+      <circle cx="9" cy="12" r="2" />
+      <circle cx="14" cy="18" r="2" />
+    </svg>
+  );
+}
+
+function ShuffleIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      className="h-6 w-6"
+      aria-hidden="true"
+    >
+      <path d="M4 7h3c5 0 5 10 10 10h3" />
+      <path d="m17 14 3 3-3 3" />
+      <path d="M4 17h3c2.5 0 3.8-2.5 5-5" />
+      <path d="M14 7c1-1.5 2-2 3-2h3" />
+      <path d="m17 2 3 3-3 3" />
+    </svg>
+  );
+}
+
+function HeartIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      className="h-6 w-6"
+      aria-hidden="true"
+    >
+      <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z" />
+    </svg>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      className="h-6 w-6"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 8v8M8 12h8" />
+    </svg>
+  );
+}
+
+function BookIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      className="h-6 w-6"
+      aria-hidden="true"
+    >
+      <path d="M4 5.5c2.7-.7 5.3-.2 8 1.5v12c-2.7-1.7-5.3-2.2-8-1.5Z" />
+      <path d="M20 5.5c-2.7-.7-5.3-.2-8 1.5v12c2.7-1.7 5.3-2.2 8-1.5Z" />
+    </svg>
+  );
+}
+
+function ArrowIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <path d="M5 12h14" />
+      <path d="m14 7 5 5-5 5" />
+    </svg>
+  );
+}
+
 export default async function HomePage() {
   const {
     recent,
@@ -98,83 +210,133 @@ export default async function HomePage() {
         }}
       />
 
-      <div>
-        <div className="mx-auto max-w-2xl">
-          <div className="text-center">
-            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              A Vault of Latmiyyahs & Qasidas
+      <div className="mx-auto max-w-6xl">
+        {/* Hero */}
+        <section className="relative border-b border-border pb-10 pt-5 sm:pb-12 sm:pt-8 lg:pb-14 lg:pt-10">
+          <div className="relative z-10 max-w-3xl">
+            <div className="mb-5 flex items-center gap-3 text-[0.68rem] font-medium uppercase tracking-[0.28em] text-muted">
+              <span>Poetry</span>
+              <span className="h-px w-5 bg-border" />
+              <span>Understanding</span>
+              <span className="h-px w-5 bg-border" />
+              <span>Reflection</span>
+            </div>
+
+            <h1 className="font-display text-[2.25rem] font-medium leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-[4.25rem]">
+              A Vault of
+              <br />
+              <span className="text-accent">
+                Latmiyyahs & Qasidas
+              </span>
             </h1>
 
-            <p className="mt-3 text-muted">
+            <p className="mt-6 max-w-3xl text-base leading-7 text-muted sm:text-lg sm:leading-8">
               Original Arabic lyrics, English translations,
-              and easy ways to find exactly what you're
-              looking for.
+              and easy ways to search and discover poetry that deepens your spiritual connection to the Ahlulbayt (AS).
             </p>
           </div>
 
-          <form action="/search" className="mt-8">
-            <div className="flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-3 shadow-sm">
-              <span aria-hidden>🔎</span>
+
+
+          {/* Search */}
+          <form
+            action="/search"
+            className="relative z-20 mt-8 max-w-5xl lg:mt-10"
+          >
+            <div className="flex items-center rounded-full border border-border bg-surface/95 p-1.5 shadow-[0_12px_35px_rgba(70,45,30,0.06)] backdrop-blur">
+              <span className="ml-3 text-fg">
+                <SearchIcon />
+              </span>
 
               <input
                 name="q"
                 type="text"
                 placeholder="Search by title, reciter, poet, or tag..."
-                className="w-full bg-transparent outline-none placeholder:text-muted"
+                className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm outline-none placeholder:text-muted sm:text-base"
               />
+
+              <button
+                type="submit"
+                aria-label="Search"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-accentFg transition-transform hover:scale-[1.03]"
+              >
+                <ArrowIcon />
+              </button>
             </div>
           </form>
+        </section>
 
-          <div className="mt-6 grid gap-3">
+        {/* Main actions */}
+        <section className="py-8 sm:py-10">
+          <div className="grid gap-3">
             <Link
               href="/explore"
-              className="rounded-lg border border-accent bg-accent/10 px-5 py-4 text-center text-lg font-medium text-accent transition-colors hover:bg-accent/20"
+              className="group flex items-center justify-between rounded-2xl border border-accent bg-accent px-5 py-5 text-accentFg shadow-[0_12px_35px_rgba(100,35,35,0.10)] transition-transform hover:-translate-y-0.5"
             >
-              Explore Latmiyyahs
+              <div className="flex items-center gap-4">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
+                  <BookIcon />
+                </span>
+
+                <div>
+                  <div className="font-display text-xl font-medium sm:text-2xl">
+                    Explore Latmiyyahs
+                  </div>
+                  <div className="mt-0.5 text-xs text-accentFg/70 sm:text-sm">
+                    Browse the full archive
+                  </div>
+                </div>
+              </div>
+
+              <span className="transition-transform group-hover:translate-x-1">
+                <ArrowIcon />
+              </span>
             </Link>
 
             <div className="grid grid-cols-2 gap-3">
-              <Link
+              <ActionCard
                 href="/search"
-                className="rounded-lg border border-border px-4 py-3 text-center text-sm hover:border-accent"
-              >
-                Advanced Filters
-              </Link>
+                title="Advanced Filters"
+                subtitle="Search precisely"
+                icon={<SlidersIcon />}
+              />
 
-              <Link
+              <ActionCard
                 href="/random"
-                className="rounded-lg border border-border px-4 py-3 text-center text-sm hover:border-accent"
-              >
-                Random Latmiyyah
-              </Link>
-            </div>
+                title="Random Latmiyyah"
+                subtitle="Discover something new"
+                icon={<ShuffleIcon />}
+              />
 
-            <div className="grid grid-cols-2 gap-3">
-              <Link
+              <ActionCard
                 href="/favourites"
-                className="rounded-lg border border-border px-4 py-3 text-center text-sm hover:border-accent"
-              >
-                Favourites
-              </Link>
+                title="Favourites"
+                subtitle="Return to saved pieces"
+                icon={<HeartIcon />}
+              />
 
-              <Link
+              <ActionCard
                 href="/submit"
-                className="rounded-lg border border-border px-4 py-3 text-center text-sm hover:border-accent"
-              >
-                Add Your Own Submission
-              </Link>
+                title="Add Your Own"
+                subtitle="Submit a latmiyyah"
+                icon={<PlusIcon />}
+              />
             </div>
           </div>
 
           {!failed && latmiyyahCount !== null && (
-            <div className="mt-8 text-center">
-              <p className="text-sm font-medium text-accent">
+            <div className="mt-9 flex items-center justify-center gap-4">
+              <span className="h-px w-12 bg-border sm:w-20" />
+
+              <p className="font-display text-base text-accent sm:text-lg">
                 {latmiyyahCount}{" "}
                 {latmiyyahCount === 1
-                  ? "latmiyyah"
+                  ? "Latmiyyah"
                   : "Latmiyyahs"}{" "}
                 in the Vault
               </p>
+
+              <span className="h-px w-12 bg-border sm:w-20" />
             </div>
           )}
 
@@ -187,24 +349,34 @@ export default async function HomePage() {
               </p>
             </div>
           )}
-        </div>
+        </section>
 
+        {/* Recently added */}
         {recent.length > 0 && (
-          <div className="mt-10">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold">
-                Recently Added
-              </h2>
+          <section className="pb-14 pt-4">
+            <div className="mb-5 flex items-end justify-between">
+              <div>
+                <p className="mb-1 text-[0.65rem] font-medium uppercase tracking-[0.24em] text-muted">
+                  From the archive
+                </p>
+
+                <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
+                  Recently Added
+                </h2>
+              </div>
 
               <Link
                 href="/search"
-                className="text-sm text-accent hover:underline"
+                className="group flex items-center gap-1.5 text-sm text-accent"
               >
                 View all
+                <span className="transition-transform group-hover:translate-x-1">
+                  <ArrowIcon />
+                </span>
               </Link>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {recent.map((item) => (
                 <LatmiyyahCard
                   key={item.id}
@@ -212,9 +384,46 @@ export default async function HomePage() {
                 />
               ))}
             </div>
-          </div>
+          </section>
         )}
       </div>
     </>
+  );
+}
+
+function ActionCard({
+  href,
+  title,
+  subtitle,
+  icon,
+}: {
+  href: string;
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group flex min-h-[116px] flex-col justify-between rounded-2xl border border-border bg-surface px-4 py-4 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-[0_10px_28px_rgba(70,45,30,0.05)] sm:min-h-[125px] sm:px-5"
+    >
+      <div className="flex items-start justify-between">
+        <span className="text-accent">{icon}</span>
+
+        <span className="text-muted transition-transform group-hover:translate-x-1 group-hover:text-accent">
+          <ArrowIcon />
+        </span>
+      </div>
+
+      <div>
+        <div className="font-display text-lg font-medium leading-tight sm:text-xl">
+          {title}
+        </div>
+
+        <p className="mt-1 hidden text-xs text-muted sm:block">
+          {subtitle}
+        </p>
+      </div>
+    </Link>
   );
 }
