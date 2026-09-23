@@ -166,7 +166,7 @@ function SearchPageInner() {
         </p>
 
         <h1 className="font-display text-3xl font-medium tracking-[-0.03em] sm:text-4xl">
-          Find a Latmiyyah
+          Search Precisely with Advanced Filters
         </h1>
 
 
