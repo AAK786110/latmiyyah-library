@@ -12,36 +12,51 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-3xl">
-      <div className="mb-10">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          About Latmiyyah Vault
+    <div className="mx-auto max-w-4xl">
+      {/* Hero */}
+      <section className="border-b border-border pb-7 pt-2 sm:pb-9 sm:pt-4">
+        <p className="mb-2 text-[0.65rem] font-medium uppercase tracking-[0.24em] text-muted">
+          About the archive
+        </p>
+
+        <h1 className="font-display text-4xl font-medium leading-[1.02] tracking-[-0.035em] sm:text-5xl">
+          About{" "}
+          <span className="text-accent">
+            Latmiyyah Vault
+          </span>
         </h1>
 
-        <p className="mt-3 text-muted">
-          A growing archive of latmiyyahs and qasidas with original Arabic
-          lyrics, English translations, reciter information, and easy ways to
-          discover related works.
+        <p className="mt-4 max-w-2xl text-sm leading-6 text-muted sm:text-base sm:leading-7">
+          A growing archive created to make latmiyyahs and nasheeds easier to
+          find, read, understand and return to.
         </p>
-      </div>
+      </section>
 
-      <div className="space-y-10">
-        <section>
-          <h2 className="text-xl font-semibold">
+      {/* Intro */}
+      <section className="grid gap-6 border-b border-border py-7 sm:grid-cols-[0.32fr_0.68fr] sm:gap-10 sm:py-9">
+        <SectionNumber number="01" />
+
+        <div>
+          <h2 className="font-display text-2xl font-medium tracking-[-0.02em]">
             What is Latmiyyah Vault?
           </h2>
 
           <p className="mt-3 leading-7 text-muted">
-            Latmiyyah Vault was created to make latmiyyahs and qasidas easier
+            Latmiyyah Vault was created to make latmiyyahs and nasheeds easier
             to find, read, understand, and share. Each entry brings together
             the original Arabic lyrics, an English translation, information
             about the reciter and poet where available, and the original video
             or recitation.
           </p>
-        </section>
+        </div>
+      </section>
 
-        <section>
-          <h2 className="text-xl font-semibold">
+      {/* Translation */}
+      <section className="grid gap-6 border-b border-border py-7 sm:grid-cols-[0.32fr_0.68fr] sm:gap-10 sm:py-9">
+        <SectionNumber number="02" />
+
+        <div>
+          <h2 className="font-display text-2xl font-medium tracking-[-0.02em]">
             Our approach to translation
           </h2>
 
@@ -53,16 +68,21 @@ export default function AboutPage() {
             always have exact English equivalents.
           </p>
 
-          <p className="mt-3 leading-7 text-muted">
+          <p className="mt-4 leading-7 text-muted">
             For that reason, translations are presented alongside the original
             Arabic rather than replacing it. Where necessary, explanatory
             wording may be used to communicate the intended meaning more
             clearly.
           </p>
-        </section>
+        </div>
+      </section>
 
-        <section>
-          <h2 className="text-xl font-semibold">
+      {/* Accuracy */}
+      <section className="grid gap-6 border-b border-border py-7 sm:grid-cols-[0.32fr_0.68fr] sm:gap-10 sm:py-9">
+        <SectionNumber number="03" />
+
+        <div>
+          <h2 className="font-display text-2xl font-medium tracking-[-0.02em]">
             Accuracy and corrections
           </h2>
 
@@ -74,7 +94,7 @@ export default function AboutPage() {
             latmiyyah page.
           </p>
 
-          <p className="mt-3 leading-7 text-muted">
+          <p className="mt-4 leading-7 text-muted">
             You can also use the{" "}
             <Link
               href="/feedback"
@@ -84,10 +104,15 @@ export default function AboutPage() {
             </Link>{" "}
             page for broader suggestions or reports.
           </p>
-        </section>
+        </div>
+      </section>
 
-        <section>
-          <h2 className="text-xl font-semibold">
+      {/* Attribution */}
+      <section className="grid gap-6 border-b border-border py-7 sm:grid-cols-[0.32fr_0.68fr] sm:gap-10 sm:py-9">
+        <SectionNumber number="04" />
+
+        <div>
+          <h2 className="font-display text-2xl font-medium tracking-[-0.02em]">
             Reciters and poets
           </h2>
 
@@ -97,37 +122,73 @@ export default function AboutPage() {
             claim ownership of the original recitations, performances, or
             poetry.
           </p>
-        </section>
+        </div>
+      </section>
 
-        <section>
-          <h2 className="text-xl font-semibold">
+      {/* Growing archive */}
+      <section className="grid gap-6 py-7 sm:grid-cols-[0.32fr_0.68fr] sm:gap-10 sm:py-9">
+        <SectionNumber number="05" />
+
+        <div>
+          <h2 className="font-display text-2xl font-medium tracking-[-0.02em]">
             A growing archive
           </h2>
 
           <p className="mt-3 leading-7 text-muted">
-            The vault will continue to grow over time with more latmiyyahs,
-            qasidas, translations, reciters, poets, themes, and occasions.
+            The Vault will continue to grow over time with more latmiyyahs,
+            nasheeds, translations, reciters, poets, themes, and occasions.
             Community submissions and corrections help make the archive more
             useful and accurate.
           </p>
 
-          <div className="mt-5 flex flex-wrap gap-3">
+          <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href="/explore"
-              className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accentFg hover:opacity-90"
+              className="group inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-accentFg transition-all hover:-translate-y-0.5"
             >
               Explore Latmiyyahs
+              <ArrowIcon />
             </Link>
 
             <Link
               href="/submit"
-              className="rounded-lg border border-border px-4 py-2 text-sm font-medium hover:border-accent"
+              className="inline-flex items-center rounded-xl border border-border bg-surface px-4 py-2.5 text-sm font-medium transition-colors hover:border-accent hover:text-accent"
             >
               Add a Submission
             </Link>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
+  );
+}
+
+function SectionNumber({
+  number,
+}: {
+  number: string;
+}) {
+  return (
+    <div>
+      <span className="text-[0.65rem] font-medium tracking-[0.22em] text-accent">
+        {number}
+      </span>
+    </div>
+  );
+}
+
+function ArrowIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      className="h-4 w-4"
+      aria-hidden="true"
+    >
+      <path d="M5 12h14" />
+      <path d="m14 7 5 5-5 5" />
+    </svg>
   );
 }
