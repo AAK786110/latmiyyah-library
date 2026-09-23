@@ -215,11 +215,11 @@ export default async function HomePage() {
         <section className="relative border-b border-border pb-10 pt-5 sm:pb-12 sm:pt-8 lg:pb-14 lg:pt-10">
           <div className="relative z-10 max-w-3xl">
             <div className="mb-5 flex items-center gap-3 text-[0.68rem] font-medium uppercase tracking-[0.28em] text-muted">
-              <span>Poetry</span>
+              <span>Arabic lyrics</span>
               <span className="h-px w-5 bg-border" />
-              <span>Understanding</span>
+              <span>English translations</span>
               <span className="h-px w-5 bg-border" />
-              <span>Reflection</span>
+              <span>Curated selections</span>
             </div>
 
             <h1 className="font-display text-[2.25rem] font-medium leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-[4.25rem]">
@@ -230,10 +230,7 @@ export default async function HomePage() {
               </span>
             </h1>
 
-            <p className="mt-6 max-w-3xl text-base leading-7 text-muted sm:text-lg sm:leading-8">
-              Original Arabic lyrics, English translations,
-              and easy ways to search and discover poetry that deepens your spiritual connection to the Ahlulbayt (AS).
-            </p>
+            
           </div>
 
 
@@ -301,12 +298,7 @@ export default async function HomePage() {
                 icon={<SlidersIcon />}
               />
 
-              <ActionCard
-                href="/random"
-                title="Random Latmiyyah"
-                subtitle="Discover something new"
-                icon={<ShuffleIcon />}
-              />
+              
 
               <ActionCard
                 href="/favourites"
@@ -315,12 +307,7 @@ export default async function HomePage() {
                 icon={<HeartIcon />}
               />
 
-              <ActionCard
-                href="/submit"
-                title="Add Your Own"
-                subtitle="Submit a latmiyyah"
-                icon={<PlusIcon />}
-              />
+              
             </div>
           </div>
 

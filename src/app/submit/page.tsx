@@ -55,6 +55,7 @@ export default function SubmitPage() {
       <h1 className="text-2xl font-semibold">Add Your Own Submission</h1>
       <p className="mt-1 text-sm text-muted">
         Submissions are reviewed before they're published - this won't go live automatically.
+        You don't need to fill in every field, but the more information you provide, the easier it is for us to review and approve your submission.
       </p>
 
       <form onSubmit={submit} className="mt-6 space-y-4">
@@ -72,13 +73,13 @@ export default function SubmitPage() {
         </div>
 
         <Field label="Title" required value={form.title} onChange={(v) => update("title", v)} />
-        <Field label="Arabic title (if applicable)" value={form.arabic_title} onChange={(v) => update("arabic_title", v)} />
+        <Field label="Arabic title" value={form.arabic_title} onChange={(v) => update("arabic_title", v)} />
         <Field label="Reciter" value={form.reciter} onChange={(v) => update("reciter", v)} />
         <Field label="Poet" value={form.poet} onChange={(v) => update("poet", v)} />
         <TextArea label="Arabic lyrics" value={form.arabic_text} onChange={(v) => update("arabic_text", v)} arabic />
         <TextArea label="English translation" value={form.english_translation} onChange={(v) => update("english_translation", v)} />
         <Field label="Proposed tags (comma separated)" value={form.proposed_tags} onChange={(v) => update("proposed_tags", v)} />
-        <TextArea label="Notes / source (optional)" value={form.notes} onChange={(v) => update("notes", v)} rows={3} />
+        <TextArea label="Notes" value={form.notes} onChange={(v) => update("notes", v)} rows={3} />
 
         <button
           type="submit"
@@ -115,7 +116,6 @@ function TextArea({
   return (
     <label className="block text-sm">
       {label}
-      <p className="mb-1 text-xs text-muted">One line per row. Blank line = new stanza.</p>
       <textarea
         dir={arabic ? "rtl" : "ltr"}
         rows={rows}
