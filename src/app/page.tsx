@@ -192,12 +192,49 @@ export default async function HomePage() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": `${SITE_URL}/#website`,
-    url: SITE_URL,
+    url: `${SITE_URL}/`,
     name: "Latmiyyah Vault",
+
+    alternateName: [
+      "Latmiya Vault",
+      "Latmiyah Vault",
+      "LatmiyyahVault",
+      "latmiyyahvault.com",
+    ],
+
     description:
       "A searchable archive of Shia latmiyyahs and nasheeds with original Arabic lyrics, English translations, reciters, poets, and videos.",
+
     inLanguage: ["en", "ar"],
+
+    publisher: {
+      "@id": `${SITE_URL}/#organization`,
+    },
   };
+
+  const organizationStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": `${SITE_URL}/#organization`,
+
+  name: "Latmiyyah Vault",
+
+  alternateName: [
+    "Latmiya Vault",
+    "Latmiyah Vault",
+  ],
+
+  url: `${SITE_URL}/`,
+
+  logo: {
+    "@type": "ImageObject",
+    url: `${SITE_URL}/icon-light.png`,
+  },
+
+  sameAs: [
+    "https://www.instagram.com/latmiyyahvault/",
+  ],
+};
 
   return (
     <>
@@ -206,6 +243,15 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(
             websiteStructuredData
+          ).replace(/</g, "\\u003c"),
+        }}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            organizationStructuredData
           ).replace(/</g, "\\u003c"),
         }}
       />
