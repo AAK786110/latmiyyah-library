@@ -210,61 +210,63 @@ export default async function HomePage() {
         }}
       />
 
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto -mt-8 max-w-6xl sm:-mt-6">
         {/* Hero */}
-        <section className="relative border-b border-border pb-10 pt-5 sm:pb-12 sm:pt-8 lg:pb-14 lg:pt-10">
-          <div className="relative z-10 max-w-3xl">
-            <div className="mb-5 flex items-center gap-3 text-[0.68rem] font-medium uppercase tracking-[0.28em] text-muted">
-              <span>Arabic lyrics</span>
-              <span className="h-px w-5 bg-border" />
-              <span>English translations</span>
-              <span className="h-px w-5 bg-border" />
-              <span>Curated selections</span>
-            </div>
+<section className="relative border-b border-border pb-4 pt-4 sm:pb-9 sm:pt-6 lg:pb-11 lg:pt-5">
+          <div className="relative z-10 mx-auto max-w-5xl text-center">
+  <div className="mb-6 flex items-center justify-center gap-2 whitespace-nowrap text-[0.5rem] font-medium uppercase tracking-[0.18em] text-muted sm:mb-5 sm:gap-3 sm:text-[0.62rem] sm:tracking-[0.24em]">
+    <span>Arabic lyrics</span>
+    <span className="h-px w-3 bg-border sm:w-5" />
+    <span>English translations</span>
+    <span className="h-px w-3 bg-border sm:w-5" />
+    <span>Curated selections</span>
+  </div>
 
-            <h1 className="font-display text-[2.25rem] font-medium leading-[1.02] tracking-[-0.035em] sm:text-5xl lg:text-[4.25rem]">
-              A Vault of
-              <br />
-              <span className="text-accent">
-                Latmiyyahs & Nasheeds
-              </span>
-            </h1>
+  <h1 className="text-center font-display font-medium leading-[0.98] tracking-[-0.04em]">
+  <span className="block text-[2.00rem] sm:text-[2.6rem] lg:text-[3.5rem]">
+    A Vault of
+  </span>
 
-            
-          </div>
+  <span className="block text-[2.65rem] text-accent sm:text-5xl lg:text-[4.5rem]">
+    Latmiyyahs
+  </span>
 
+  <span className="block whitespace-nowrap text-[2.65rem] text-accent sm:text-5xl lg:text-[4.5rem]">
+    &amp; Nasheeds
+  </span>
+</h1>
+</div>
 
+  {/* Search */}
+  <form
+    action="/search"
+    className="relative z-20 mx-auto mt-5 max-w-5xl sm:mt-7 lg:mt-8"
+  >
+    <div className="flex items-center rounded-full border border-border bg-surface/95 p-1.5 shadow-[0_12px_35px_rgba(70,45,30,0.06)] backdrop-blur">
+      <span className="ml-3 text-fg">
+        <SearchIcon />
+      </span>
 
-          {/* Search */}
-          <form
-            action="/search"
-            className="relative z-20 mt-8 max-w-5xl lg:mt-10"
-          >
-            <div className="flex items-center rounded-full border border-border bg-surface/95 p-1.5 shadow-[0_12px_35px_rgba(70,45,30,0.06)] backdrop-blur">
-              <span className="ml-3 text-fg">
-                <SearchIcon />
-              </span>
+      <input
+        name="q"
+        type="text"
+        placeholder="Search by title, reciter, poet, or tag..."
+        className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm outline-none placeholder:text-muted sm:py-3 sm:text-base"
+      />
 
-              <input
-                name="q"
-                type="text"
-                placeholder="Search by title, reciter, poet, or tag..."
-                className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm outline-none placeholder:text-muted sm:text-base"
-              />
-
-              <button
-                type="submit"
-                aria-label="Search"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-accentFg transition-transform hover:scale-[1.03]"
-              >
-                <ArrowIcon />
-              </button>
-            </div>
-          </form>
-        </section>
+      <button
+        type="submit"
+        aria-label="Search"
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-accentFg transition-transform hover:scale-[1.03] sm:h-11 sm:w-11"
+      >
+        <ArrowIcon />
+      </button>
+    </div>
+  </form>
+</section>
 
         {/* Main actions */}
-        <section className="py-8 sm:py-10">
+        <section className="py-6 sm:py-9">
           <div className="grid gap-3">
             <Link
               href="/explore"
@@ -392,8 +394,7 @@ function ActionCard({
   return (
     <Link
       href={href}
-      className="group flex min-h-[116px] flex-col justify-between rounded-2xl border border-border bg-surface px-4 py-4 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-[0_10px_28px_rgba(70,45,30,0.05)] sm:min-h-[125px] sm:px-5"
-    >
+      className="group flex min-h-[84px] flex-col justify-between rounded-2xl border border-border bg-surface px-4 py-3.5 transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-[0_10px_28px_rgba(70,45,30,0.05)] sm:min-h-[100px] sm:px-5 sm:py-4"    >
       <div className="flex items-start justify-between">
         <span className="text-accent">{icon}</span>
 
