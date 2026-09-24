@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 
@@ -57,7 +58,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen">
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-VB4PZ63EV5"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-VB4PZ63EV5');
+          `}
+        </Script>
+
         <Header />
+
         <main className="mx-auto max-w-6xl px-4 py-8">
           {children}
         </main>
