@@ -106,39 +106,70 @@ function SearchPageInner() {
   const results = useMemo(() => {
     let items = all;
 
+    /*
+     * TAG FILTERS USE AND LOGIC.
+     *
+     * If multiple tags are selected inside a category,
+     * the latmiyyah must contain EVERY selected tag.
+     *
+     * Example:
+     * Fast + Shoor
+     * means:
+     * Fast AND Shoor
+     */
+
     if (
       filters.holy_personality.length >
       0
     ) {
-      items = items.filter((i) =>
-        i.tags?.some((t) =>
-          filters.holy_personality.includes(
-            t.id
-          )
+      items = items.filter((item) =>
+        filters.holy_personality.every(
+          (selectedTagId) =>
+            item.tags?.some(
+              (tag) =>
+                tag.id ===
+                selectedTagId
+            ) ?? false
         )
       );
     }
 
     if (filters.context.length > 0) {
-      items = items.filter((i) =>
-        i.tags?.some((t) =>
-          filters.context.includes(t.id)
+      items = items.filter((item) =>
+        filters.context.every(
+          (selectedTagId) =>
+            item.tags?.some(
+              (tag) =>
+                tag.id ===
+                selectedTagId
+            ) ?? false
         )
       );
     }
 
     if (filters.speed.length > 0) {
-      items = items.filter((i) =>
-        i.tags?.some((t) =>
-          filters.speed.includes(t.id)
+      items = items.filter((item) =>
+        filters.speed.every(
+          (selectedTagId) =>
+            item.tags?.some(
+              (tag) =>
+                tag.id ===
+                selectedTagId
+            ) ?? false
         )
       );
     }
 
+    /*
+     * Reciters remain OR.
+     *
+     * Selecting two reciters means:
+     * show pieces by either reciter.
+     */
     if (filters.reciters.length > 0) {
-      items = items.filter((i) =>
+      items = items.filter((item) =>
         filters.reciters.includes(
-          i.reciter
+          item.reciter
         )
       );
     }
@@ -168,8 +199,6 @@ function SearchPageInner() {
         <h1 className="font-display text-3xl font-medium tracking-[-0.03em] sm:text-4xl">
           Search Precisely with Advanced Filters
         </h1>
-
-
       </section>
 
       {/* Search */}
