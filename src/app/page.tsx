@@ -22,7 +22,7 @@ async function fetchHomepageLatmiyyahs() {
       })
       .eq("status", "published")
       .order("created_at", { ascending: false })
-      .limit(50);
+      .limit(500);
 
   let result = await runQuery();
 
