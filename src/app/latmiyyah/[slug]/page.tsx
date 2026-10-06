@@ -30,6 +30,37 @@ const getLatmiyyah = cache(async (slug: string) => {
   } as Latmiyyah;
 });
 
+function createArabicSearchTerms(item: Latmiyyah) {
+  if (!item.arabic_title) {
+    return [];
+  }
+
+  const title = item.arabic_title.trim();
+
+  const terms = [
+    `كلمات ${title}`,
+    `${title} كلمات`,
+    `كلمات قصيدة ${title}`,
+    `${title} مكتوبة`,
+  ];
+
+  if (item.reciter) {
+    terms.push(
+      `كلمات ${title} ${item.reciter}`,
+      `${title} ${item.reciter}`
+    );
+  }
+
+  if (item.poet) {
+    terms.push(
+      `كلمات ${title} ${item.poet}`,
+      `${title} ${item.poet}`
+    );
+  }
+
+  return Array.from(new Set(terms));
+}
+
 function createDescription(item: Latmiyyah) {
   const arabicTitle = item.arabic_title
     ? ` (${item.arabic_title})`
@@ -39,13 +70,19 @@ function createDescription(item: Latmiyyah) {
     ? `, recited by ${item.reciter}`
     : "";
 
+  const poet = item.poet
+    ? `, with lyrics by ${item.poet}`
+    : "";
+
   const arabicSeo = item.arabic_title
-    ? ` اقرأ كلمات ${item.arabic_title} بالعربية مع الترجمة الإنجليزية.`
-    : " اقرأ كلمات اللطمية بالعربية مع الترجمة الإنجليزية.";
+    ? ` كلمات ${item.arabic_title} مكتوبة بالعربية مع الترجمة الإنجليزية${
+        item.reciter ? `، بصوت ${item.reciter}` : ""
+      }.`
+    : " كلمات اللطمية مكتوبة بالعربية مع الترجمة الإنجليزية.";
 
   return (
     `Read the Arabic lyrics and English translation of ` +
-    `${item.title}${arabicTitle}${reciter} on Latmiyyah Vault.` +
+    `${item.title}${arabicTitle}${reciter}${poet} on Latmiyyah Vault.` +
     arabicSeo
   );
 }
@@ -59,6 +96,9 @@ function createStructuredData(
   const breadcrumbId = `${canonicalUrl}#breadcrumb`;
   const websiteId = `${SITE_URL}/#website`;
 
+  const arabicSearchTerms =
+    createArabicSearchTerms(item);
+
   return {
     "@context": "https://schema.org",
 
@@ -70,7 +110,7 @@ function createStructuredData(
         url: canonicalUrl,
 
         name: item.arabic_title
-          ? `${item.title} (${item.arabic_title}) Lyrics & English Translation`
+          ? `${item.title} | كلمات ${item.arabic_title} | Lyrics & English Translation`
           : `${item.title} Lyrics & English Translation`,
 
         description,
@@ -101,7 +141,11 @@ function createStructuredData(
 
         ...(item.arabic_title
           ? {
-              alternateName: item.arabic_title,
+              alternateName: [
+                item.arabic_title,
+                `كلمات ${item.arabic_title}`,
+                `${item.arabic_title} كلمات`,
+              ],
             }
           : {}),
 
@@ -110,6 +154,12 @@ function createStructuredData(
         description,
 
         inLanguage: ["ar", "en"],
+
+        ...(arabicSearchTerms.length > 0
+          ? {
+              keywords: arabicSearchTerms,
+            }
+          : {}),
 
         ...(item.poet
           ? {
@@ -186,22 +236,51 @@ export async function generateMetadata({
     };
   }
 
-  const arabicTitle = item.arabic_title
-    ? ` (${item.arabic_title})`
-    : "";
-
-  const seoTitle =
-    `${item.title}${arabicTitle} Lyrics & English Translation`;
+  const seoTitle = item.arabic_title
+    ? `${item.title} Lyrics & English Translation | كلمات ${item.arabic_title}`
+    : `${item.title} Lyrics & English Translation`;
 
   const description = createDescription(item);
 
   const canonicalUrl =
     `${SITE_URL}/latmiyyah/${item.slug}`;
 
+  const keywords = [
+    `${item.title} lyrics`,
+    `${item.title} English translation`,
+    item.title,
+
+    ...(item.arabic_title
+      ? createArabicSearchTerms(item)
+      : []),
+
+    ...(item.reciter
+      ? [
+          `${item.title} ${item.reciter}`,
+          item.reciter,
+        ]
+      : []),
+
+    ...(item.poet
+      ? [
+          `${item.title} ${item.poet}`,
+          item.poet,
+        ]
+      : []),
+
+    "latmiyyah lyrics",
+    "Arabic latmiyyah lyrics",
+    "Latmiyyah Vault",
+  ];
+
   return {
     title: seoTitle,
 
     description,
+
+    keywords: Array.from(
+      new Set(keywords)
+    ),
 
     alternates: {
       canonical: canonicalUrl,
@@ -260,7 +339,9 @@ export default async function LatmiyyahPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData).replace(
+          __html: JSON.stringify(
+            structuredData
+          ).replace(
             /</g,
             "\\u003c"
           ),

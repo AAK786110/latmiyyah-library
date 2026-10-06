@@ -17,7 +17,8 @@ export default function LatmiyyahPageClient({
 }: {
   item: Latmiyyah;
 }) {
-  const [showTranslation, setShowTranslation] = useState(true);
+  const [showTranslation, setShowTranslation] =
+    useState(true);
 
   const [shareStatus, setShareStatus] =
     useState<"idle" | "copied">("idle");
@@ -56,22 +57,28 @@ export default function LatmiyyahPageClient({
     }
   }
 
-  const videoId = extractYouTubeId(item.youtube_url);
+  const videoId = extractYouTubeId(
+    item.youtube_url
+  );
 
   const content = showTranslation ? (
     <TranslationView
       arabicText={item.arabic_text}
-      englishText={item.english_translation}
+      englishText={
+        item.english_translation
+      }
     />
   ) : (
-    <LyricsView arabicText={item.arabic_text} />
+    <LyricsView
+      arabicText={item.arabic_text}
+    />
   );
 
   return (
     <div className="mx-auto max-w-2xl">
       {/* Title / metadata */}
       <div className="flex items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <h1 className="text-2xl font-semibold">
             {item.title}
           </h1>
@@ -88,20 +95,28 @@ export default function LatmiyyahPageClient({
 
           <p className="mt-2 text-sm text-muted">
             {item.reciter}
-            {item.poet ? ` · ${item.poet}` : ""}
+
+            {item.poet
+              ? ` · ${item.poet}`
+              : ""}
           </p>
 
-          {/* Visible SEO description */}
+          {/* English SEO description */}
           <p className="mt-2 text-sm text-muted">
-            Arabic lyrics and English translation of{" "}
+            Arabic lyrics and English translation
+            of{" "}
             <span className="font-medium text-fg">
               {item.title}
             </span>
+
             {item.arabic_title && (
               <>
                 {" "}
                 (
-                <span lang="ar" dir="rtl">
+                <span
+                  lang="ar"
+                  dir="rtl"
+                >
                   {item.arabic_title}
                 </span>
                 )
@@ -110,20 +125,46 @@ export default function LatmiyyahPageClient({
             .
           </p>
 
-          {/* Clickable tags */}
-          {item.tags && item.tags.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {item.tags.map((tag) => (
-                <Link
-                  key={tag.id}
-                  href={`/explore/${tag.category}/${tag.slug}`}
-                  className="rounded-full border border-border px-2 py-0.5 text-xs text-muted transition-colors hover:border-accent hover:text-accent"
-                >
-                  {tag.name}
-                </Link>
-              ))}
-            </div>
+          {/* Arabic SEO description */}
+          {item.arabic_title && (
+            <p
+              lang="ar"
+              dir="rtl"
+              className="mt-1.5 text-sm leading-6 text-muted"
+            >
+              كلمات{" "}
+              <span className="font-medium text-fg">
+                {item.arabic_title}
+              </span>{" "}
+              مكتوبة بالعربية مع الترجمة
+              الإنجليزية
+              {item.reciter
+                ? `، بصوت ${item.reciter}`
+                : ""}
+              {item.poet
+                ? `، وكلمات ${item.poet}`
+                : ""}
+              .
+            </p>
           )}
+
+          {/* Clickable tags */}
+          {item.tags &&
+            item.tags.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {item.tags.map(
+                  (tag) => (
+                    <Link
+                      key={tag.id}
+                      href={`/explore/${tag.category}/${tag.slug}`}
+                      className="rounded-full border border-border px-2 py-0.5 text-xs text-muted transition-colors hover:border-accent hover:text-accent"
+                    >
+                      {tag.name}
+                    </Link>
+                  )
+                )}
+              </div>
+            )}
         </div>
 
         {/* Share + Favourite */}
@@ -137,19 +178,21 @@ export default function LatmiyyahPageClient({
               : "Share"}
           </button>
 
-          <FavouriteButton id={item.id} />
+          <FavouriteButton
+            id={item.id}
+          />
         </div>
       </div>
 
       {/* Embedded YouTube player */}
       {videoId && (
         <div className="mt-4">
-            <LiteYouTubeEmbed
+          <LiteYouTubeEmbed
             videoId={videoId}
             title={item.title}
-            />
+          />
         </div>
-        )}
+      )}
 
       {/* Translation / fullscreen controls */}
       <div className="mt-6 flex items-center justify-between border-b border-border pb-3">
@@ -158,7 +201,9 @@ export default function LatmiyyahPageClient({
             type="checkbox"
             checked={showTranslation}
             onChange={(e) =>
-              setShowTranslation(e.target.checked)
+              setShowTranslation(
+                e.target.checked
+              )
             }
           />
 
@@ -175,9 +220,13 @@ export default function LatmiyyahPageClient({
         {content}
       </div>
 
-      <SuggestEditForm latmiyyah={item} />
+      <SuggestEditForm
+        latmiyyah={item}
+      />
 
-      <RelatedLatmiyyahs current={item} />
+      <RelatedLatmiyyahs
+        current={item}
+      />
     </div>
   );
 }
