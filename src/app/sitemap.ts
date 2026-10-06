@@ -11,15 +11,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const { data } = await supabase
     .from("latmiyyahs")
-    .select("slug, created_at")
+    .select("slug, created_at, updated_at")
     .eq("status", "published")
     .order("created_at", { ascending: false });
 
   const latmiyyahPages: MetadataRoute.Sitemap = (data || []).map((item) => ({
     url: `${SITE_URL}/latmiyyah/${item.slug}`,
-    lastModified: item.created_at
-      ? new Date(item.created_at)
-      : new Date(),
+    lastModified: item.updated_at
+      ? new Date(item.updated_at)
+      : item.created_at
+        ? new Date(item.created_at)
+        : new Date(),
     changeFrequency: "monthly",
     priority: 0.8,
   }));
